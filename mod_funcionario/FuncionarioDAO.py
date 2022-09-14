@@ -2,7 +2,6 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 router = APIRouter()
 
-
 class Funcionario(BaseModel):
     codigo: int = None
     nome: str

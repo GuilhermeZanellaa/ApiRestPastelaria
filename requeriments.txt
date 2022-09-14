@@ -11,3 +11,14 @@ six==1.16.0
 Werkzeug==2.2.2
 greenlet==1.1.3
 SQLAlchemy==1.4.41
+
+# COMO RODAR 
+
+# 1 - CD na pasta da aplicacao e ative o Script de ativacao de ambiente 
+# EX: cd C:\Users\gamel\Desktop\Guilherme\DevWeb\ApiRestPastelaria\ApiRestPastelaria
+# cd scripts
+# activate
+# ambiente de desenvolvimento ativado
+
+# 2 - Execute a API colocando o servidor para rodar:
+# no cmd, uvicorn apiPastelaria:app --reload
