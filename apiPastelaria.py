@@ -8,9 +8,12 @@ from mod_produto import ProdutoDAO
 
 # importe das classes de modelo de persistência(DB)
 from mod_funcionario.FuncionarioModel import FuncionarioDB
+from mod_cliente.ClienteModel import ClienteDB
+from mod_produto.ProdutoModel import ProdutoDB
 
 # importe das classes com as rotas/endpoints
 from mod_funcionario import FuncionarioDAO
+from mod_cliente import ClienteDAO
 
 app = FastAPI()
 
