@@ -3,6 +3,7 @@ from sqlalchemy import Column, VARCHAR, CHAR, Integer
 
 # ORM
 
+
 class ClienteDB(db.Base):
     __tablename__ = 'tb_cliente'
     id_cliente = Column(Integer, primary_key=True,

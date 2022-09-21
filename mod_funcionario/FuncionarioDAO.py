@@ -7,13 +7,14 @@ from mod_funcionario.FuncionarioModel import FuncionarioDB
 
 
 class Funcionario(BaseModel):
-    codigo: int = None
+    id_funcionario: int = None
     nome: str
     matricula: str
     cpf: str
     telefone: str = None
     grupo: int
     senha: str = None
+
 
 router = APIRouter()
 
@@ -23,13 +24,15 @@ def get_funcionario():
     try:
         session = db.Session()
         dados = session.query(FuncionarioDB).all()
-        return dados, 200 
+        return dados, 200
     except Exception as e:
         return {"msg": "Erro ao listar", "erro": str(e)}, 404
     finally:
         session.close()
 
 # buscar por id
+
+
 @router.get("/funcionario/{id}", tags=["funcionario"])
 def get_funcionario_id(id: int):
     try:
@@ -100,8 +103,7 @@ def delete_funcionario(id: int):
     try:
         session = db.Session()
 
-        dados = session.query(FuncionarioDB).filter(
-            FuncionarioDB.id_funcionario).one()
+        dados = session.query(FuncionarioDB).filter(FuncionarioDB.id_funcionario).one()
         session.delete(dados)
         session.commit()
 

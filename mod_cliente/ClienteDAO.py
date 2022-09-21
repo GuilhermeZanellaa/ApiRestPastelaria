@@ -14,6 +14,7 @@ class Cliente(BaseModel):
     dia_fiado: int
     senha: str
 
+
 router = APIRouter()
 
 # Criar os 'endpoints' de cliente: GET, POST, PUT, DELETE
