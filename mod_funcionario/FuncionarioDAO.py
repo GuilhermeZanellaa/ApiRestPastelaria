@@ -2,6 +2,8 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 # Imports de persistência
+from fastapi import Depends
+import security
 import db
 from mod_funcionario.FuncionarioModel import FuncionarioDB
 
@@ -15,8 +17,9 @@ class Funcionario(BaseModel):
     grupo: int
     senha: str = None
 
-
-router = APIRouter()
+# dependências de forma global para pedir usuario e senha para usar o swagger
+router = APIRouter(dependencies=[Depends(
+    security.verify_token), Depends(security.verify_key)])
 
 
 @router.get("/funcionario/", tags=["funcionario"])
@@ -103,7 +106,8 @@ def delete_funcionario(id: int):
     try:
         session = db.Session()
 
-        dados = session.query(FuncionarioDB).filter(FuncionarioDB.id_funcionario).one()
+        dados = session.query(FuncionarioDB).filter(
+            FuncionarioDB.id_funcionario).one()
         session.delete(dados)
         session.commit()
 

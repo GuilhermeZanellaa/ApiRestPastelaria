@@ -1,6 +1,9 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
+# Imports de persistência
+from fastapi import Depends
+import security
 import db
 from mod_cliente.ClienteModel import ClienteDB
 
@@ -15,7 +18,9 @@ class Cliente(BaseModel):
     senha: str
 
 
-router = APIRouter()
+# dependências de forma global para pedir usuario e senha para usar o swagger
+router = APIRouter(dependencies=[Depends(
+    security.verify_token), Depends(security.verify_key)])
 
 # Criar os 'endpoints' de cliente: GET, POST, PUT, DELETE
 

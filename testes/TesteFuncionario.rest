@@ -1,6 +1,13 @@
 ### Verbo GET – listar
 GET http://localhost:8000/funcionario/ HTTP/1.1
 
+### Verbo GET – listar - com autenticacao
+curl -x 'GET' \
+    'http://localhost:8000/funcionario/' \
+    -H 'Accept: application/json' \
+    -H 'x-token: abcBolinhasToken' \
+    -H 'x-key: abcBolinhasKey'
+
 ### Verbo POST – adicionar
 POST http://127.0.0.1:8000/funcionario/ HTTP/1.1
 content-type: application/json

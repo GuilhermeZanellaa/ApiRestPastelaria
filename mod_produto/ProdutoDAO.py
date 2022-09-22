@@ -1,6 +1,9 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
+# Imports de persistência
+from fastapi import Depends
+import security
 import db
 from mod_produto.ProdutoModel import ProdutoDB
 
@@ -13,7 +16,9 @@ class Produto(BaseModel):
     valor_unitario: float
 
 
-router = APIRouter()
+# dependências de forma global para pedir usuario e senha para usar o swagger
+router = APIRouter(dependencies=[Depends(
+    security.verify_token), Depends(security.verify_key)])
 
 
 @router.get("/produto/", tags=["produto"])
