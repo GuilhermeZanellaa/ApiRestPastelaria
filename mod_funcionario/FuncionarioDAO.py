@@ -1,11 +1,14 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-
-# Imports de persistência
 from fastapi import Depends
 import security
+
+# import da persistência
 import db
 from mod_funcionario.FuncionarioModel import FuncionarioDB
+
+router = APIRouter(dependencies=[Depends(
+    security.verify_token), Depends(security.verify_key)])
 
 
 class Funcionario(BaseModel):
@@ -17,15 +20,14 @@ class Funcionario(BaseModel):
     grupo: int
     senha: str = None
 
-# dependências de forma global para pedir usuario e senha para usar o swagger
-router = APIRouter(dependencies=[Depends(
-    security.verify_token), Depends(security.verify_key)])
+# Criar os endpoints de Funcionario: GET, POST, PUT, DELETE
 
 
 @router.get("/funcionario/", tags=["funcionario"])
 def get_funcionario():
     try:
         session = db.Session()
+        # busca todos
         dados = session.query(FuncionarioDB).all()
         return dados, 200
     except Exception as e:
@@ -33,13 +35,12 @@ def get_funcionario():
     finally:
         session.close()
 
-# buscar por id
-
 
 @router.get("/funcionario/{id}", tags=["funcionario"])
-def get_funcionario_id(id: int):
+def get_funcionario(id: int):
     try:
         session = db.Session()
+        # busca um com filtro
         dados = session.query(FuncionarioDB).filter(
             FuncionarioDB.id_funcionario == id).all()
         return dados, 200
@@ -49,34 +50,35 @@ def get_funcionario_id(id: int):
         session.close()
 
 
-# insere
 @router.post("/funcionario/", tags=["funcionario"])
 def post_funcionario(corpo: Funcionario):
     try:
         session = db.Session()
+        dados = FuncionarioDB()
 
-        dados = FuncionarioDB(None, corpo.nome, corpo.matricula,
-                              corpo.cpf, corpo.telefone, corpo.grupo, corpo.senha)
+        dados.id_funcionario = None
+        dados.nome = corpo.nome
+        dados.cpf = corpo.cpf
+        dados.telefone = corpo.telefone
+        dados.senha = corpo.senha
+        dados.matricula = corpo.matricula
+        dados.grupo = corpo.grupo
 
         session.add(dados)
-
         session.commit()
-
-        return {"msg": "Cadastrado com sucesso", "id": dados.id_funcionario}, 200
-
+        return {"msg": "Cadastrado com sucesso!", "id": dados.id_funcionario}, 200
     except Exception as e:
         session.rollback()
         return {"msg": "Erro ao cadastrar", "erro": str(e)}, 406
-
     finally:
         session.close()
 
 
-# edita
 @router.put("/funcionario/{id}", tags=["funcionario"])
 def put_funcionario(id: int, corpo: Funcionario):
     try:
         session = db.Session()
+
         dados = session.query(FuncionarioDB).filter(
             FuncionarioDB.id_funcionario == id).one()
 
@@ -90,31 +92,29 @@ def put_funcionario(id: int, corpo: Funcionario):
         session.add(dados)
         session.commit()
 
-        return {"msg": "Editado com sucesso", "id": dados.id_funcionario}, 201
+        return {"msg": "Editado com sucesso!", "id": dados.id_funcionario}, 201
 
     except Exception as e:
         session.rollback()
         return {"msg": "Erro ao editar", "erro": str(e)}, 406
-
     finally:
         session.close()
 
 
-# exclui
 @router.delete("/funcionario/{id}", tags=["funcionario"])
 def delete_funcionario(id: int):
     try:
         session = db.Session()
 
         dados = session.query(FuncionarioDB).filter(
-            FuncionarioDB.id_funcionario).one()
+            FuncionarioDB.id_funcionario == id).one()
         session.delete(dados)
         session.commit()
 
-        return {"msg": "Excluído com sucesso", "id": dados.id_funcionario}, 201
+        return {"msg": "Excluido com sucesso!", "id": dados.id_funcionario}, 201
+
     except Exception as e:
         session.rollback()
         return {"msg": "Erro ao excluir", "erro": str(e)}, 406
-
     finally:
         session.close()
